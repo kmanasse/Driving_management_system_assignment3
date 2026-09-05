@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>Driving School Management System</title>
+    <meta charset="UTF-8"/>
+    <!-- EXTERNAL CSS: loaded from resources/css/style.css -->
+    <h:outputStylesheet library="css" name="style.css"/>
+</h:head>
+
+<h:body>
+
+    <div class="masthead">
+        <h1>Driving School Management System</h1>
+        <p>Adventist University of Central Africa - Web Technologies</p>
+        <div class="navbar">
+            <h:link outcome="index" value="Home"/>
+            <h:link outcome="setup" value="Instructors and vehicles"/>
+            <h:link outcome="students" value="Students"/>
+            <h:link outcome="lessons" value="Lesson schedule"/>
+        </div>
+    </div>
+
+    <div class="page">
+
+        <div class="panel">
+            <h2>What this system does</h2>
+            <p class="hint">Phase 1 deliverable</p>
+            <p>
+                Driving schools schedule practical lessons by hand, usually in a paper
+                diary. Because a lesson needs a student, an instructor and a vehicle all
+                free at the same time, the same instructor or the same car is regularly
+                promised to two students at once. The clash is only discovered when both
+                turn up.
+            </p>
+            <p>
+                This system replaces the diary. Every booking is checked against every
+                other booking before it is accepted, so a double booking is refused at
+                the moment it is made rather than discovered at the kerb.
+            </p>
+        </div>
+
+        <div class="panel">
+            <h2>Getting started</h2>
+            <p class="hint">Follow these three steps in order the first time you run the application</p>
+            <ol>
+                <li>
+                    Open <strong>Instructors and vehicles</strong> and register at least one
+                    instructor and one vehicle. A lesson cannot be booked without them.
+                </li>
+                <li>
+                    Open <strong>Students</strong> and enrol a student. Try a date of birth
+                    less than 18 years ago to see the custom validator reject it.
+                </li>
+                <li>
+                    Open <strong>Lesson schedule</strong> and book a lesson. Then book a
+                    second one that overlaps it to see the double booking check refuse it.
+                </li>
+            </ol>
+        </div>
+
+        <!-- INLINE CSS: the style attribute below is written directly on the
+             element. Used here for a one-off note that needs no reusable class. -->
+        <div class="panel" style="border-left: 4px solid #1f5f8b;">
+            <h2>Entities with full CRUD</h2>
+            <p class="hint">Student and Lesson, as required by the assignment</p>
+            <p style="margin: 0;">
+                The remaining entities in the class diagram - Instructor, Vehicle, Payment
+                and Mock Exam - are mapped by Hibernate and created in the database, but
+                only Student and Lesson have complete create, read, update and delete
+                screens.
+            </p>
+        </div>
+
+    </div>
+
+</h:body>
+</html>

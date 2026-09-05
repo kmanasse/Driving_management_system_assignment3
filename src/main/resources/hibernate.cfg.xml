@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    <session-factory>
+
+        <!-- Connection settings. Change the database name, username and
+             password to match your local PostgreSQL installation. -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/driving_school</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">postgres</property>
+
+        <!-- Tells Hibernate which SQL flavour to generate. -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
+
+        <!-- Prints every generated statement to the console. Invaluable when
+             explaining what the ORM is actually doing. -->
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+
+        <!-- Creates and alters tables to match the entity classes on startup.
+             Convenient for a class project. Never use on a production
+             database, where a code change could alter live tables. -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Small built-in connection pool. Fine for development. -->
+        <property name="hibernate.connection.pool_size">10</property>
+
+        <!-- Entity mappings. Every @Entity class must be listed here. -->
+        <mapping class="rw.ac.auca.drivingschool.model.Student"/>
+        <mapping class="rw.ac.auca.drivingschool.model.Instructor"/>
+        <mapping class="rw.ac.auca.drivingschool.model.Vehicle"/>
+        <mapping class="rw.ac.auca.drivingschool.model.Lesson"/>
+        <mapping class="rw.ac.auca.drivingschool.model.Payment"/>
+        <mapping class="rw.ac.auca.drivingschool.model.MockExam"/>
+
+    </session-factory>
+</hibernate-configuration>

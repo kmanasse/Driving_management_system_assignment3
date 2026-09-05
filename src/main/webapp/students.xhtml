@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Students - Driving School</title>
+    <meta charset="UTF-8"/>
+    <!-- EXTERNAL CSS -->
+    <h:outputStylesheet library="css" name="style.css"/>
+</h:head>
+
+<h:body>
+
+    <div class="masthead">
+        <h1>Driving School Management System</h1>
+        <p>Student enrolment</p>
+        <div class="navbar">
+            <h:link outcome="index" value="Home"/>
+            <h:link outcome="setup" value="Instructors and vehicles"/>
+            <h:link outcome="students" value="Students"/>
+            <h:link outcome="lessons" value="Lesson schedule"/>
+        </div>
+    </div>
+
+    <div class="page">
+
+        <div class="messages">
+            <h:messages globalOnly="true" layout="list"
+                        infoClass="info" errorClass="error"/>
+        </div>
+
+        <h:form>
+
+            <div class="panel">
+                <h2>
+                    <h:outputText value="Edit student" rendered="#{studentBean.editing}"/>
+                    <h:outputText value="Enrol a new student" rendered="#{not studentBean.editing}"/>
+                </h2>
+                <p class="hint">
+                    Fields marked with an asterisk are required. Dates use the format yyyy-MM-dd.
+                </p>
+
+                <table class="form-grid">
+
+                    <tr>
+                        <td><label>Student ID *</label></td>
+                        <td>
+                            <!-- BUILT-IN VALIDATION: required plus a length rule.
+                                 Both are declared in the page, no Java involved. -->
+                            <h:inputText id="studentId"
+                                         value="#{studentBean.student.studentId}"
+                                         required="true"
+                                         requiredMessage="Student ID is required."
+                                         disabled="#{studentBean.editing}"
+                                         label="Student ID">
+                                <f:validateLength minimum="6" maximum="6"/>
+                            </h:inputText>
+                            <h:message for="studentId" styleClass="field-error"/>
+                            <div style="font-size: 12px; color: #61728a;">
+                                Exactly six characters, for example STD001
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>First name *</label></td>
+                        <td>
+                            <h:inputText id="firstName"
+                                         value="#{studentBean.student.firstName}"
+                                         required="true"
+                                         requiredMessage="First name is required."
+                                         label="First name">
+                                <f:validateLength minimum="2" maximum="50"/>
+                            </h:inputText>
+                            <h:message for="firstName" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Last name *</label></td>
+                        <td>
+                            <h:inputText id="lastName"
+                                         value="#{studentBean.student.lastName}"
+                                         required="true"
+                                         requiredMessage="Last name is required."
+                                         label="Last name">
+                                <f:validateLength minimum="2" maximum="50"/>
+                            </h:inputText>
+                            <h:message for="lastName" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Phone *</label></td>
+                        <td>
+                            <!-- BUILT-IN VALIDATION: a regular expression rule. -->
+                            <h:inputText id="phone"
+                                         value="#{studentBean.student.phone}"
+                                         required="true"
+                                         requiredMessage="Phone number is required."
+                                         validatorMessage="Enter a Rwandan mobile number, for example 0788123456."
+                                         label="Phone">
+                                <f:validateRegex pattern="07[2389][0-9]{7}"/>
+                            </h:inputText>
+                            <h:message for="phone" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Email</label></td>
+                        <td>
+                            <h:inputText id="email"
+                                         value="#{studentBean.student.email}"
+                                         validatorMessage="Enter a valid email address."
+                                         label="Email">
+                                <f:validateRegex pattern="|[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}"/>
+                            </h:inputText>
+                            <h:message for="email" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Date of birth *</label></td>
+                        <td>
+                            <!-- CUSTOM VALIDATION: legalAgeValidator is the class
+                                 rw.ac.auca.drivingschool.validator.LegalAgeValidator.
+                                 The converter runs first and turns the text into a
+                                 LocalDate; the validator then checks the age. -->
+                            <h:inputText id="dateOfBirth"
+                                         value="#{studentBean.student.dateOfBirth}"
+                                         required="true"
+                                         requiredMessage="Date of birth is required."
+                                         label="Date of birth">
+                                <f:converter converterId="localDateConverter"/>
+                                <f:validator validatorId="legalAgeValidator"/>
+                            </h:inputText>
+                            <h:message for="dateOfBirth" styleClass="field-error"/>
+                            <div style="font-size: 12px; color: #61728a;">
+                                Format yyyy-MM-dd. The student must be at least 18.
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Licence category *</label></td>
+                        <td>
+                            <h:selectOneMenu id="licenseCategory"
+                                             value="#{studentBean.student.licenseCategory}"
+                                             required="true"
+                                             label="Licence category">
+                                <f:selectItems value="#{studentBean.licenseCategories}"/>
+                            </h:selectOneMenu>
+                            <h:message for="licenseCategory" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Status *</label></td>
+                        <td>
+                            <h:selectOneMenu id="status"
+                                             value="#{studentBean.student.status}"
+                                             required="true"
+                                             label="Status">
+                                <f:selectItems value="#{studentBean.statuses}"/>
+                            </h:selectOneMenu>
+                            <h:message for="status" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td style="padding-top: 14px;">
+                            <h:commandButton value="#{studentBean.editing ? 'Update student' : 'Enrol student'}"
+                                             action="#{studentBean.save}"
+                                             styleClass="btn"/>
+                            <h:commandButton value="Clear"
+                                             action="#{studentBean.clear}"
+                                             immediate="true"
+                                             styleClass="btn btn-secondary"/>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+
+            <div class="panel">
+                <h2>Enrolled students</h2>
+                <p class="hint">
+                    #{studentBean.students.size()} student(s) on record
+                </p>
+
+                <h:panelGroup rendered="#{empty studentBean.students}">
+                    <p class="empty-note">No students enrolled yet. Use the form above to add one.</p>
+                </h:panelGroup>
+
+                <h:dataTable value="#{studentBean.students}" var="s"
+                             styleClass="data-table"
+                             rendered="#{not empty studentBean.students}">
+
+                    <h:column>
+                        <f:facet name="header">ID</f:facet>
+                        #{s.studentId}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Name</f:facet>
+                        #{s.fullName}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Phone</f:facet>
+                        #{s.phone}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Category</f:facet>
+                        #{s.licenseCategory}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Enrolled</f:facet>
+                        <h:outputText value="#{s.enrollmentDate}">
+                            <f:converter converterId="localDateConverter"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Status</f:facet>
+                        <span class="pill #{studentBean.statusStyleClass(s.status)}">#{s.status}</span>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Edit"
+                                         action="#{studentBean.edit(s)}"
+                                         styleClass="btn btn-secondary btn-small"/>
+                        <h:commandButton value="Delete"
+                                         action="#{studentBean.delete(s)}"
+                                         styleClass="btn btn-danger btn-small"
+                                         onclick="return confirm('Delete this student and all their lessons?');"/>
+                    </h:column>
+
+                </h:dataTable>
+            </div>
+
+        </h:form>
+
+    </div>
+
+</h:body>
+</html>

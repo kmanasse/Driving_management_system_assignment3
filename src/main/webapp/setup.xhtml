@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Instructors and vehicles - Driving School</title>
+    <meta charset="UTF-8"/>
+    <h:outputStylesheet library="css" name="style.css"/>
+</h:head>
+
+<h:body>
+
+    <div class="masthead">
+        <h1>Driving School Management System</h1>
+        <p>Instructors and training vehicles</p>
+        <div class="navbar">
+            <h:link outcome="index" value="Home"/>
+            <h:link outcome="setup" value="Instructors and vehicles"/>
+            <h:link outcome="students" value="Students"/>
+            <h:link outcome="lessons" value="Lesson schedule"/>
+        </div>
+    </div>
+
+    <div class="page">
+
+        <div class="messages">
+            <h:messages globalOnly="true" layout="list"
+                        infoClass="info" errorClass="error"/>
+        </div>
+
+        <h:form>
+            <div class="panel">
+                <h2>Register an instructor</h2>
+                <p class="hint">Instructors are supporting data for the scheduler.</p>
+
+                <table class="form-grid">
+                    <tr>
+                        <td><label>Instructor ID *</label></td>
+                        <td>
+                            <h:inputText id="instructorId"
+                                         value="#{setupBean.instructor.instructorId}"
+                                         required="true"
+                                         requiredMessage="Instructor ID is required."
+                                         label="Instructor ID">
+                                <f:validateLength minimum="3" maximum="6"/>
+                            </h:inputText>
+                            <h:message for="instructorId" styleClass="field-error"/>
+                            <div style="font-size: 12px; color: #61728a;">For example INS01</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>First name *</label></td>
+                        <td>
+                            <h:inputText id="insFirstName"
+                                         value="#{setupBean.instructor.firstName}"
+                                         required="true"
+                                         requiredMessage="First name is required."
+                                         label="First name"/>
+                            <h:message for="insFirstName" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Last name *</label></td>
+                        <td>
+                            <h:inputText id="insLastName"
+                                         value="#{setupBean.instructor.lastName}"
+                                         required="true"
+                                         requiredMessage="Last name is required."
+                                         label="Last name"/>
+                            <h:message for="insLastName" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Phone *</label></td>
+                        <td>
+                            <h:inputText id="insPhone"
+                                         value="#{setupBean.instructor.phone}"
+                                         required="true"
+                                         requiredMessage="Phone number is required."
+                                         validatorMessage="Enter a Rwandan mobile number, for example 0788123456."
+                                         label="Phone">
+                                <f:validateRegex pattern="07[2389][0-9]{7}"/>
+                            </h:inputText>
+                            <h:message for="insPhone" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Teaches category *</label></td>
+                        <td>
+                            <h:selectOneMenu id="insCategory"
+                                             value="#{setupBean.instructor.licenseCategory}"
+                                             required="true"
+                                             label="Category">
+                                <f:selectItems value="#{setupBean.licenseCategories}"/>
+                            </h:selectOneMenu>
+                            <h:message for="insCategory" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-top: 14px;">
+                            <h:commandButton value="Save instructor"
+                                             action="#{setupBean.saveInstructor}"
+                                             styleClass="btn"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <h:panelGroup rendered="#{not empty setupBean.instructors}">
+                    <h:dataTable value="#{setupBean.instructors}" var="i"
+                                 styleClass="data-table" style="margin-top: 20px;">
+                        <h:column>
+                            <f:facet name="header">ID</f:facet>
+                            #{i.instructorId}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Name</f:facet>
+                            #{i.fullName}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Phone</f:facet>
+                            #{i.phone}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Category</f:facet>
+                            #{i.licenseCategory}
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+            </div>
+        </h:form>
+
+        <h:form>
+            <div class="panel">
+                <h2>Register a vehicle</h2>
+                <p class="hint">The number plate is the primary key.</p>
+
+                <table class="form-grid">
+                    <tr>
+                        <td><label>Plate number *</label></td>
+                        <td>
+                            <h:inputText id="plateNumber"
+                                         value="#{setupBean.vehicle.plateNumber}"
+                                         required="true"
+                                         requiredMessage="Plate number is required."
+                                         validatorMessage="Enter a plate like RAB123C."
+                                         label="Plate number">
+                                <f:validateRegex pattern="R[A-Z]{2}[0-9]{3}[A-Z]"/>
+                            </h:inputText>
+                            <h:message for="plateNumber" styleClass="field-error"/>
+                            <div style="font-size: 12px; color: #61728a;">For example RAB123C</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Make *</label></td>
+                        <td>
+                            <h:inputText id="make"
+                                         value="#{setupBean.vehicle.make}"
+                                         required="true"
+                                         requiredMessage="Make is required."
+                                         label="Make"/>
+                            <h:message for="make" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Model *</label></td>
+                        <td>
+                            <h:inputText id="model"
+                                         value="#{setupBean.vehicle.model}"
+                                         required="true"
+                                         requiredMessage="Model is required."
+                                         label="Model"/>
+                            <h:message for="model" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Transmission *</label></td>
+                        <td>
+                            <h:selectOneMenu id="transmission"
+                                             value="#{setupBean.vehicle.transmission}"
+                                             required="true"
+                                             label="Transmission">
+                                <f:selectItems value="#{setupBean.transmissions}"/>
+                            </h:selectOneMenu>
+                            <h:message for="transmission" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Category *</label></td>
+                        <td>
+                            <h:selectOneMenu id="vehCategory"
+                                             value="#{setupBean.vehicle.category}"
+                                             required="true"
+                                             label="Category">
+                                <f:selectItems value="#{setupBean.licenseCategories}"/>
+                            </h:selectOneMenu>
+                            <h:message for="vehCategory" styleClass="field-error"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="padding-top: 14px;">
+                            <h:commandButton value="Save vehicle"
+                                             action="#{setupBean.saveVehicle}"
+                                             styleClass="btn"/>
+                        </td>
+                    </tr>
+                </table>
+
+                <h:panelGroup rendered="#{not empty setupBean.vehicles}">
+                    <h:dataTable value="#{setupBean.vehicles}" var="v"
+                                 styleClass="data-table" style="margin-top: 20px;">
+                        <h:column>
+                            <f:facet name="header">Plate</f:facet>
+                            #{v.plateNumber}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Vehicle</f:facet>
+                            #{v.make} #{v.model}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Transmission</f:facet>
+                            #{v.transmission}
+                        </h:column>
+                        <h:column>
+                            <f:facet name="header">Category</f:facet>
+                            #{v.category}
+                        </h:column>
+                    </h:dataTable>
+                </h:panelGroup>
+            </div>
+        </h:form>
+
+    </div>
+
+</h:body>
+</html>

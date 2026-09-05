@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Lesson schedule - Driving School</title>
+    <meta charset="UTF-8"/>
+
+    <!-- EXTERNAL CSS: the shared stylesheet used by every page. -->
+    <h:outputStylesheet library="css" name="style.css"/>
+
+    <!-- INTERNAL CSS: rules that only this page needs, written in a style
+         block in the head. Keeping them here rather than in the shared file
+         avoids loading scheduling-only rules on every other page. -->
+    <style type="text/css">
+        .slot-legend {
+            display: block;
+            margin-bottom: 18px;
+            padding: 12px 16px;
+            background: #eef2f7;
+            border-left: 4px solid #1f5f8b;
+            font-size: 13px;
+            color: #3d4a5c;
+        }
+
+        .slot-legend strong {
+            color: #1c2733;
+        }
+
+        .time-input input {
+            min-width: 110px;
+        }
+
+        .conflict-note {
+            font-size: 12px;
+            color: #61728a;
+            margin-top: 4px;
+        }
+
+        .data-table td.slot-cell {
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .resource-cell {
+            color: #3d4a5c;
+            font-size: 13px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+
+    <div class="masthead">
+        <h1>Driving School Management System</h1>
+        <p>Lesson scheduling</p>
+        <div class="navbar">
+            <h:link outcome="index" value="Home"/>
+            <h:link outcome="setup" value="Instructors and vehicles"/>
+            <h:link outcome="students" value="Students"/>
+            <h:link outcome="lessons" value="Lesson schedule"/>
+        </div>
+    </div>
+
+    <div class="page">
+
+        <div class="messages">
+            <h:messages globalOnly="true" layout="list"
+                        infoClass="info" errorClass="error"/>
+        </div>
+
+        <div class="slot-legend">
+            <strong>How the clash check works.</strong>
+            A booking is refused when the student, the instructor or the vehicle is
+            already committed to an overlapping slot on the same date. Cancelled
+            lessons release their resources and never block a new booking.
+            Back-to-back lessons are allowed: 09:00-10:00 and 10:00-11:00 do not overlap.
+        </div>
+
+        <h:form>
+
+            <div class="panel">
+                <h2>
+                    <h:outputText value="Reschedule lesson" rendered="#{lessonBean.editing}"/>
+                    <h:outputText value="Book a lesson" rendered="#{not lessonBean.editing}"/>
+                </h2>
+                <p class="hint">
+                    All three resources must be free for the whole slot.
+                </p>
+
+                <h:panelGroup rendered="#{empty lessonBean.availableInstructors or empty lessonBean.availableVehicles or empty lessonBean.availableStudents}">
+                    <p class="empty-note" style="color: #b32d2d;">
+                        You need at least one student, one instructor and one vehicle before
+                        a lesson can be booked. Use the Students and the Instructors and
+                        vehicles pages first.
+                    </p>
+                </h:panelGroup>
+
+                <table class="form-grid">
+
+                    <tr>
+                        <td><label>Student *</label></td>
+                        <td>
+                            <h:selectOneMenu id="student"
+                                             value="#{lessonBean.lesson.student}"
+                                             required="true"
+                                             requiredMessage="Choose a student."
+                                             label="Student">
+                                <f:selectItem itemLabel="-- choose a student --" itemValue="#{null}"/>
+                                <f:selectItems value="#{lessonBean.availableStudents}"
+                                               var="st"
+                                               itemValue="#{st}"
+                                               itemLabel="#{st.studentId} - #{st.fullName}"/>
+                                <f:converter converterId="studentConverter"/>
+                            </h:selectOneMenu>
+                            <h:message for="student" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Instructor *</label></td>
+                        <td>
+                            <h:selectOneMenu id="instructor"
+                                             value="#{lessonBean.lesson.instructor}"
+                                             required="true"
+                                             requiredMessage="Choose an instructor."
+                                             label="Instructor">
+                                <f:selectItem itemLabel="-- choose an instructor --" itemValue="#{null}"/>
+                                <f:selectItems value="#{lessonBean.availableInstructors}"
+                                               var="ins"
+                                               itemValue="#{ins}"
+                                               itemLabel="#{ins.fullName} (category #{ins.licenseCategory})"/>
+                                <f:converter converterId="instructorConverter"/>
+                            </h:selectOneMenu>
+                            <h:message for="instructor" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Vehicle *</label></td>
+                        <td>
+                            <h:selectOneMenu id="vehicle"
+                                             value="#{lessonBean.lesson.vehicle}"
+                                             required="true"
+                                             requiredMessage="Choose a vehicle."
+                                             label="Vehicle">
+                                <f:selectItem itemLabel="-- choose a vehicle --" itemValue="#{null}"/>
+                                <f:selectItems value="#{lessonBean.availableVehicles}"
+                                               var="v"
+                                               itemValue="#{v}"
+                                               itemLabel="#{v.label} (#{v.transmission})"/>
+                                <f:converter converterId="vehicleConverter"/>
+                            </h:selectOneMenu>
+                            <h:message for="vehicle" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Date *</label></td>
+                        <td>
+                            <h:inputText id="lessonDate"
+                                         value="#{lessonBean.lesson.lessonDate}"
+                                         required="true"
+                                         requiredMessage="Lesson date is required."
+                                         label="Date">
+                                <f:converter converterId="localDateConverter"/>
+                            </h:inputText>
+                            <h:message for="lessonDate" styleClass="field-error"/>
+                            <div class="conflict-note">Format yyyy-MM-dd</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Start time *</label></td>
+                        <td class="time-input">
+                            <!-- BUILT-IN VALIDATION: required, plus a regex that
+                                 rejects anything that is not a 24 hour clock time. -->
+                            <h:inputText id="startTime"
+                                         value="#{lessonBean.lesson.startTime}"
+                                         required="true"
+                                         requiredMessage="Start time is required."
+                                         label="Start time">
+                                <f:converter converterId="localTimeConverter"/>
+                            </h:inputText>
+                            <h:message for="startTime" styleClass="field-error"/>
+                            <div class="conflict-note">Format HH:mm, for example 09:00</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>End time *</label></td>
+                        <td class="time-input">
+                            <h:inputText id="endTime"
+                                         value="#{lessonBean.lesson.endTime}"
+                                         required="true"
+                                         requiredMessage="End time is required."
+                                         label="End time">
+                                <f:converter converterId="localTimeConverter"/>
+                            </h:inputText>
+                            <h:message for="endTime" styleClass="field-error"/>
+                            <div class="conflict-note">Must be later than the start time</div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Status *</label></td>
+                        <td>
+                            <h:selectOneMenu id="status"
+                                             value="#{lessonBean.lesson.status}"
+                                             required="true"
+                                             label="Status">
+                                <f:selectItems value="#{lessonBean.statuses}"/>
+                            </h:selectOneMenu>
+                            <h:message for="status" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><label>Notes</label></td>
+                        <td>
+                            <h:inputText id="notes"
+                                         value="#{lessonBean.lesson.notes}"
+                                         label="Notes"
+                                         style="min-width: 340px;">
+                                <f:validateLength maximum="255"/>
+                            </h:inputText>
+                            <h:message for="notes" styleClass="field-error"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td style="padding-top: 14px;">
+                            <h:commandButton value="#{lessonBean.editing ? 'Update lesson' : 'Book lesson'}"
+                                             action="#{lessonBean.save}"
+                                             styleClass="btn"/>
+                            <h:commandButton value="Clear"
+                                             action="#{lessonBean.clear}"
+                                             immediate="true"
+                                             styleClass="btn btn-secondary"/>
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+
+            <div class="panel">
+                <h2>Scheduled lessons</h2>
+                <p class="hint">#{lessonBean.lessons.size()} lesson(s) on record</p>
+
+                <h:panelGroup rendered="#{empty lessonBean.lessons}">
+                    <p class="empty-note">No lessons scheduled yet.</p>
+                </h:panelGroup>
+
+                <h:dataTable value="#{lessonBean.lessons}" var="l"
+                             styleClass="data-table"
+                             rendered="#{not empty lessonBean.lessons}">
+
+                    <h:column>
+                        <f:facet name="header">Date</f:facet>
+                        <h:outputText value="#{l.lessonDate}">
+                            <f:converter converterId="localDateConverter"/>
+                        </h:outputText>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Slot</f:facet>
+                        <h:outputText value="#{l.timeSlot}" styleClass="slot-cell"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Student</f:facet>
+                        #{l.student.fullName}
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Instructor</f:facet>
+                        <h:outputText value="#{l.instructor.fullName}" styleClass="resource-cell"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Vehicle</f:facet>
+                        <h:outputText value="#{l.vehicle.plateNumber}" styleClass="resource-cell"/>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Status</f:facet>
+                        <span class="pill #{lessonBean.statusStyleClass(l.status)}">#{l.status}</span>
+                    </h:column>
+
+                    <h:column>
+                        <f:facet name="header">Actions</f:facet>
+                        <h:commandButton value="Edit"
+                                         action="#{lessonBean.edit(l)}"
+                                         styleClass="btn btn-secondary btn-small"/>
+                        <h:commandButton value="Delete"
+                                         action="#{lessonBean.delete(l)}"
+                                         styleClass="btn btn-danger btn-small"
+                                         onclick="return confirm('Delete this lesson?');"/>
+                    </h:column>
+
+                </h:dataTable>
+            </div>
+
+        </h:form>
+
+    </div>
+
+</h:body>
+</html>
