@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.Objects;
 
 /**
  * A qualified driving instructor employed by the school.
@@ -85,6 +86,26 @@ public class Instructor extends Audit {
 
     public void setLicenseCategory(String licenseCategory) {
         this.licenseCategory = licenseCategory;
+    }
+
+    /**
+     * Compares by primary key. See Student.equals() for why JSF needs this.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Instructor)) {
+            return false;
+        }
+        Instructor that = (Instructor) other;
+        return instructorId != null && instructorId.equals(that.instructorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(instructorId);
     }
 
     public LocalDate getHireDate() {

@@ -8,6 +8,7 @@ import javax.persistence.Table;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A person enrolled at the driving school.
@@ -149,6 +150,36 @@ public class Student extends Audit {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Compares by primary key rather than by object identity.
+     *
+     * Required by JSF. An h:selectOneMenu validates the submitted value by
+     * checking that it equals() one of the available options. StudentConverter
+     * loads a fresh instance from the database, which is a different object in
+     * memory from the one already in the list, so without this override the
+     * component reports "Value is not valid".
+     *
+     * Overriding equals and hashCode by primary key is also standard practice
+     * for JPA entities in general, because Hibernate stores them in sets and
+     * maps where identity based equality causes subtle bugs.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Student)) {
+            return false;
+        }
+        Student that = (Student) other;
+        return studentId != null && studentId.equals(that.studentId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(studentId);
     }
 
     public List<Lesson> getLessons() {

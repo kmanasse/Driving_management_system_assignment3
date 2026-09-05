@@ -31,8 +31,10 @@
         <url-pattern>*.xhtml</url-pattern>
     </servlet-mapping>
 
+    <!-- Landing page. setup.xhtml comes first because a lesson cannot be
+         booked until at least one instructor and one vehicle exist. -->
     <welcome-file-list>
-        <welcome-file>index.xhtml</welcome-file>
+        <welcome-file>setup.xhtml</welcome-file>
     </welcome-file-list>
 
 </web-app>

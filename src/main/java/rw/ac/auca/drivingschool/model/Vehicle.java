@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * A training vehicle. The number plate is the natural primary key.
@@ -87,6 +88,26 @@ public class Vehicle extends Audit {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    /**
+     * Compares by primary key. See Student.equals() for why JSF needs this.
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Vehicle)) {
+            return false;
+        }
+        Vehicle that = (Vehicle) other;
+        return plateNumber != null && plateNumber.equals(that.plateNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plateNumber);
     }
 
     public boolean isAvailable() {

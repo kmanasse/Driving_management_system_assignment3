@@ -15,7 +15,6 @@
         <h1>Driving School Management System</h1>
         <p>Instructors and training vehicles</p>
         <div class="navbar">
-            <h:link outcome="index" value="Home"/>
             <h:link outcome="setup" value="Instructors and vehicles"/>
             <h:link outcome="students" value="Students"/>
             <h:link outcome="lessons" value="Lesson schedule"/>
@@ -46,7 +45,7 @@
                                 <f:validateLength minimum="3" maximum="6"/>
                             </h:inputText>
                             <h:message for="instructorId" styleClass="field-error"/>
-                            <div style="font-size: 12px; color: #61728a;">For example INS01</div>
+                            <div style="font-size: 12px; color: #555555;">For example INS01</div>
                         </td>
                     </tr>
                     <tr>
@@ -149,7 +148,7 @@
                                 <f:validateRegex pattern="R[A-Z]{2}[0-9]{3}[A-Z]"/>
                             </h:inputText>
                             <h:message for="plateNumber" styleClass="field-error"/>
-                            <div style="font-size: 12px; color: #61728a;">For example RAB123C</div>
+                            <div style="font-size: 12px; color: #555555;">For example RAB123C</div>
                         </td>
                     </tr>
                     <tr>

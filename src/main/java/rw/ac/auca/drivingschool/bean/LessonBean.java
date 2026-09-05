@@ -18,7 +18,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Backing bean for the lesson scheduling screen. This is where the hardest
+ * rule in the system lives.
+ *
+ * @author  Student Name
+ * @version 1.0
+ */
 @Named
 @ViewScoped
 public class LessonBean implements Serializable {

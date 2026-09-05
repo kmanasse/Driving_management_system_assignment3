@@ -16,7 +16,6 @@
         <h1>Driving School Management System</h1>
         <p>Student enrolment</p>
         <div class="navbar">
-            <h:link outcome="index" value="Home"/>
             <h:link outcome="setup" value="Instructors and vehicles"/>
             <h:link outcome="students" value="Students"/>
             <h:link outcome="lessons" value="Lesson schedule"/>
@@ -57,7 +56,7 @@
                                 <f:validateLength minimum="6" maximum="6"/>
                             </h:inputText>
                             <h:message for="studentId" styleClass="field-error"/>
-                            <div style="font-size: 12px; color: #61728a;">
+                            <div style="font-size: 12px; color: #555555;">
                                 Exactly six characters, for example STD001
                             </div>
                         </td>
@@ -136,7 +135,7 @@
                                 <f:validator validatorId="legalAgeValidator"/>
                             </h:inputText>
                             <h:message for="dateOfBirth" styleClass="field-error"/>
-                            <div style="font-size: 12px; color: #61728a;">
+                            <div style="font-size: 12px; color: #555555;">
                                 Format yyyy-MM-dd. The student must be at least 18.
                             </div>
                         </td>
